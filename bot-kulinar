@@ -1,21 +1,19 @@
 # Название
 import telebot
 from telebot import types
-bot= telebot.TeleBot('8019374338:AAFhSmlfr7iYw44FJfzAGhrn-OHY9h47nLg')
-# Обработка команды старт
+bot= telebot.TeleBot('TOKEN')
+
+# Обработка команды /start
 @bot.message_handler(commands=['start'])
-def url(message):
+def show_start_menu(message):
     markup= types.ReplyKeyboardMarkup(resize_keyboard=True)
     greet_btn = types.KeyboardButton("👋 Поздороваться")
     markup.add(greet_btn)
     bot.send_message(message.chat.id, "👋 Привет! Я Мария, здесь ты найдешь мои рецепты!", reply_markup=markup)
 
-@bot.message_handler(func=lambda message: message.text.lower() == '👋 Поздороваться')
-def handle_custom_start(message):
-    url(message) # вызывать стартовую функцию
-# Обработка текстовых сообщений
+# Меню с кнопками: Мой канал, Рецепты птицы и т.д.
 @bot.message_handler(content_types=['text'])
-def get_text_messages(message):
+def show_main_buttons(message):
     if message.text == '👋 Поздороваться':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton('Мой канал')
@@ -24,21 +22,42 @@ def get_text_messages(message):
         btn_back = types.KeyboardButton('🔙 Назад')
         markup.add(btn1, btn2) 
         markup.add(btn3, btn_back)
-        bot.send_message(message.chat.id, '❓ Задайте интересующий вопрос', reply_markup=markup)
+        bot.send_message(message.chat.id, 'Выберите интересуюший пункт❓', reply_markup=markup)
 
     elif message.text == 'Мой канал':
-        bot.send_message(message.chat.id, '[Переходи и подписывайся](https://t.me/kylinari_Mari)', parse_mode='Markdown')
+        bot.send_message(message.chat.id, '[Переходи и подписывайся] (https://t.me/kylinari_Mari)', parse_mode='Markdown')
 
     elif message.text == 'Рецепты птицы':
-        bot.send_message(message.chat.id, '[Рецепты здесь 🐥](https://t.me/kylinari_Mari/15)', parse_mode='Markdown')
+        show_chicken_recipes(message)
 
     elif message.text == 'Отзывы':
         bot.send_message(message.chat.id, '[Отзывы 💬](https://t.me/+DfHZbo_GVyQ1NDRi)', parse_mode='Markdown')
 
+    elif message.text =="Кесадилья":
+        bot.send_message(message.chat.id, '[Кесадилья](https://t.me/kylinari_Mari/6)', parse_mode='Markdown')
+
+    elif message.text =="Плов":
+        bot.send_message(message.chat.id, '[Плов](https://t.me/kylinari_Mari/11)', parse_mode='Markdown')
+
+    elif message.text =="Омлет в лепешке":
+        bot.send_message(message.chat.id, '[Омлет в лепешке](https://t.me/kylinari_Mari/23)', parse_mode='Markdown')
+
+    elif message.text =="Курица по-французски":
+        bot.send_message(message.chat.id, '[Курица по-французски](https://t.me/kylinari_Mari/26)', parse_mode='Markdown')
+    
     elif message.text == '🔙 Назад':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("👋 Поздороваться")
-        markup.add(btn1)
-        bot.send_message(message.chat.id, "↩️ Вы вернулись в главное меню.", reply_markup=markup)
+        show_start_menu(message)
+#Меню с рецептами птицы
+def show_chicken_recipes(message):
+        markup= types.ReplyKeyboardMarkup(resize_keyboard=True)
+        recipe1 = types.KeyboardButton("Кесадилья")
+        recipe2 = types.KeyboardButton("Плов")
+        recipe3 = types.KeyboardButton("Омлет в лепешке")
+        recipe4 = types.KeyboardButton("Курица по-французски")
+        btn_back = types.KeyboardButton("🔙 Назад")
+        markup.add(recipe1, recipe2)
+        markup.add(recipe3, recipe4)
+        markup.add(btn_back)
+        bot.send_message(message.chat.id,"Выбери рецепт:", reply_markup=markup)
 
 bot.polling(none_stop=True, interval=0)
